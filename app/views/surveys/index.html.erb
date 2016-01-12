@@ -1,0 +1,44 @@
+<div class="row">
+  <div class="col-md-12 col-xs-12 col-sm-12" style="padding:0px">
+    <% @surveys.each do |survey| %>
+    <div class="frame">
+      <div class="border">
+        <div class="num_votes">
+          <%= link_to survey, class: 'inline' do %>
+              <%= pluralize(survey.votes.count, 'vote') %>
+          <% end %>
+        </div>
+        <div class="num_comments">
+            <%= link_to survey, class: 'inline' do %>
+                <%= pluralize(survey.comments.count, 'comment') %>
+            <% end %>
+        </div>
+        <div style="clear:both"></div>
+      </div>
+      <div class="survey_title">
+        <% base_sentence = create_base_sentence(survey.sentence_type).split(' ').insert(2, '<br>').join(' ') %>
+        <%= link_to(survey, class: 'btn btn-link') do %>
+            <span class="sentence"><%= "#{base_sentence}#{survey.comparison_word}?".html_safe %></span>
+        <% end %>
+      </div>
+      <%= create_image_tag(survey.pictures, 1) %>
+      <%= create_image_tag(survey.pictures, 2) %>
+      <br>
+      <div class="click_msg">Click button you like !!</div>
+      <div class="vote_buttons">
+        <%= button_to survey.first_word, votes_path,  { class: 'btn btn-success vote-button',
+                                                        params: {survey_id: survey.id, vote_type: 1 }} %>
+        <%= button_to survey.second_word, votes_path, { class: 'btn btn-info vote-button',
+                                                        params: {survey_id: survey.id, vote_type: 2 }} %>
+      </div>
+      <div class="survey_bottom">
+        <span class="cateroy_link">
+          <%= link_to(Survey::CATEGORY[survey.category], "\/#{Survey::CATEGORY[survey.category].downcase}", class: 'btn btn-link') %>
+        <span class="create_time"><%= survey.created_at.to_s(:default) %></span>
+      </div>
+    </div>
+    <% end %>
+    <div style="clear:both"></div>
+  </div>
+</div>
+<%= paginate @surveys %>

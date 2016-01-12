@@ -1,0 +1,14 @@
+class CreateComments < ActiveRecord::Migration
+  def change
+    create_table :comments do |t|
+      t.integer :survey_id, null: false
+      t.integer :user_id,   null: false
+      t.string  :content,   null: false
+
+      t.timestamps null: false
+    end
+    add_index :comments, :survey_id
+    add_index :comments, :user_id
+    add_foreign_key :comments, :surveys
+  end
+end

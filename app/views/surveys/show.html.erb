@@ -1,0 +1,65 @@
+<div class="container">
+   <div class="row">
+      <div class="frame2">
+         <div id="" class="col-xs-12">
+            <% base_sentence = create_base_sentence(@survey.sentence_type) %>
+            <h1><%= "#{base_sentence}#{@survey.comparison_word}?" %></h1>
+         </div>
+         <div id="first" class="col-xs-5">
+            <div class="first_pic">
+               <% if @survey.pictures.find_by(picture_type: 1) %>
+               <%= image_tag(@survey.pictures.find_by(picture_type: 1).uri) %>
+               <% end %>
+            </div>
+            <div class="num_votes col-xs-12">
+               <% count = 0 %>
+               <% count = @survey.votes.where(vote_type: 1).count if @survey.votes.find_by(vote_type: 1) %>
+               <%= pluralize(count, 'vote') %>
+            </div>
+            <div style="first_button col-xs-12">
+               <%= button_to @survey.first_word, votes_path,  { class: 'btn btn-success nav-justified',
+                  params: {survey_id: @survey.id, vote_type: 1 }} %>
+            </div>
+         </div>
+         <div id="vs" class="col-xs-2">
+            VS
+         </div>
+         <div id="second" class="col-xs-5">
+            <div class="second_pic">
+                <% if @survey.pictures.find_by(picture_type: 2) %>
+                  <%= image_tag(@survey.pictures.find_by(picture_type: 2).uri) %>
+                <% end %>
+            </div>
+            <div class="num_votes col-xs-12">
+              <% count = 0 %>
+              <% count = @survey.votes.where(vote_type: 2).count if @survey.votes.find_by(vote_type: 2) %>
+              <%= pluralize(count, 'vote') %>
+            </div>
+            <div style="second_button col-xs-12">
+              <%= button_to @survey.second_word, votes_path,  { class: 'btn btn-info nav-justified',
+                  params: {survey_id: @survey.id, vote_type: 2 }} %>
+            </div>
+         </div>
+      </div>
+      <div class="comment_section col-xs-12">
+        <% @comments.each do |comment| %>
+        <div class="comment_title">
+          <span class="name"><%= comment.user.name %></span>
+          <span class="time"><%= "#{distance_of_time_in_words_to_now(comment.created_at)} ago" %></span>
+        </div>
+        <div class="comment">
+          <span><%= comment.content %></span>
+        </div>
+        <hr>
+        <% end %>
+        <div>
+          <%= form_for([@survey, @comment]) do |f| %>
+          <div class="field">
+            <%= f.text_area :content, placeholder: "Compose new comment..." %>
+          </div>
+            <%= f.submit "Post comment", class: "btn btn-primary" %>
+          <% end %>
+         </div>
+      </div>
+   </div>
+</div>
